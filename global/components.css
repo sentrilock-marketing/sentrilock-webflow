@@ -1,0 +1,82 @@
+/* =========================================================
+   NAVBAR COMPONENT
+   ========================================================= */
+.dropdown-chevron {
+  transition: transform 300ms ease-in-out !important;
+  transform-origin: center center !important;
+}
+
+.navbar1_dropdown-toggle.w--open .dropdown-chevron {
+  transform: rotate(180deg) !important;
+}
+
+@media screen and (min-width: 992px) {
+  .navbar1_dropdown-list {
+    display: block !important; 
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: translateY(-12px) !important;
+    transition: opacity 350ms cubic-bezier(0.16, 1, 0.3, 1), transform 350ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+  .navbar1_dropdown-list.w--open {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: translateY(0) !important;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .navbar1_dropdown-list.w--open {
+    animation: dropdownSlideInMobile 450ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  }
+}
+
+@keyframes dropdownSlideInMobile {
+  0% { opacity: 0; transform: translateY(-12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================
+   LOGO LIST COMPONENT
+   ========================================================= */
+.logo3_component {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  overflow: hidden !important;
+  width: 100% !important;
+}
+
+.logo3_list {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  flex-shrink: 0 !important;
+  align-items: center !important;
+  justify-content: space-around !important;
+  animation: logo-marquee-scroll 35s linear infinite !important;
+}
+
+.logo3_wrapper {
+  flex-shrink: 0 !important;
+  margin-right: 4rem !important; 
+}
+
+@keyframes logo-marquee-scroll {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-100%); }
+}
+
+.logo3_component:hover .logo3_list {
+  animation-play-state: paused !important;
+}
+
+@media screen and (max-width: 767px) {
+  .logo3_wrapper { margin-right: 2.25rem !important; }
+  .logo3_logo { height: 1.75rem !important; width: auto !important; }
+}
+
+@media screen and (max-width: 479px) {
+  .logo3_wrapper { margin-right: 1.5rem !important; }
+  .logo3_logo { height: 1.5rem !important; width: auto !important; }
+}
