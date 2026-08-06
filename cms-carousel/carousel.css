@@ -1,0 +1,52 @@
+/* 1. Hide browser scrollbars */
+.carousel-cms-list,
+.w-dyn-items {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.carousel-cms-list::-webkit-scrollbar,
+.w-dyn-items::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* 2. Force complete flush-left alignment */
+.carousel-cms-list,
+.w-dyn-items,
+.w-dyn-list,
+ul.w-dyn-items {
+  padding-left: 0px !important;
+  margin-left: 0px !important;
+  padding-inline-start: 0px !important;
+  padding-inline-end: 0px !important;
+  list-style-type: none !important;
+}
+
+.press-cms-item,
+.w-dyn-item {
+  padding-left: 0px !important;
+  margin-left: 0px !important;
+}
+
+/* 3. KILL THE PHANTOM FLEX CHILD (Webflow Clearfix Bug) */
+.carousel-cms-list::before,
+.carousel-cms-list::after,
+.w-dyn-items::before,
+.w-dyn-items::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* 4. Style dots into small round circles */
+.custom-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #d1d5db;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.custom-dot.active {
+  background-color: #000000;
+  transform: scale(1.1);
+}
