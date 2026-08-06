@@ -1,0 +1,267 @@
+/* SentriLock Custom Calendar Styling */
+.fc {
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  --fc-border-color: #E5E7EB;
+}
+
+/* Prevent Internal Scrollbars on Month View */
+.fc-daygrid .fc-scroller,
+.fc-daygrid .fc-scroller-harness {
+  overflow: visible !important;
+  height: auto !important;
+}
+
+/* Highlight Today's Date Cell in Soft Yellow */
+.fc .fc-day-today {
+  background-color: #FFFBEB !important;
+}
+
+/* Month Title Header - Montserrat Bold */
+.fc .fc-toolbar-title {
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  color: #002855 !important;
+}
+
+/* --------------------------------------------------
+   1. NAVIGATION ARROWS (< >) - Transparent + Border
+   -------------------------------------------------- */
+.fc .fc-prev-button,
+.fc .fc-next-button {
+  background-color: transparent !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  color: #002855 !important;
+  border-radius: 0.375rem !important;
+  padding: 0.4rem 0.75rem !important;
+  box-shadow: none !important;
+}
+
+.fc .fc-prev-button {
+  margin-right: 0.5rem !important; /* 8px Gap between arrows */
+}
+
+.fc .fc-prev-button:hover,
+.fc .fc-next-button:hover {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Today Button - SentriLock Green */
+.fc .fc-today-button {
+  background-color: #00C18E !important;
+  border: 1px solid #00C18E !important;
+  color: #ffffff !important;
+  font-family: 'Open Sans', sans-serif !important;
+  font-weight: 600 !important;
+  text-transform: capitalize !important;
+  border-radius: 0.375rem !important;
+  padding: 0.4rem 0.9rem !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+}
+
+.fc .fc-today-button:hover {
+  background-color: #00A378 !important;
+  border-color: #00A378 !important;
+}
+
+.fc .fc-today-button:disabled {
+  background-color: #00C18E !important;
+  border-color: #00C18E !important;
+  opacity: 0.6 !important;
+}
+
+/* --------------------------------------------------
+   2. SEGMENTED TOGGLE SWITCH (MONTH / WEEK / LIST)
+   -------------------------------------------------- */
+.fc-header-toolbar .fc-toolbar-chunk:last-child .fc-button-group {
+  background-color: #F3F4F6 !important;
+  padding: 3px !important;
+  border-radius: 0.5rem !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  display: inline-flex !important;
+  gap: 2px !important;
+}
+
+.fc .fc-dayGridMonth-button,
+.fc .fc-timeGridWeek-button,
+.fc .fc-listMonth-button,
+.fc .fc-listWeek-button {
+  background: transparent !important;
+  border: none !important;
+  color: #4B5563 !important;
+  border-radius: 0.375rem !important;
+  padding: 0.35rem 0.85rem !important;
+  font-family: 'Open Sans', sans-serif !important;
+  font-weight: 500 !important;
+  text-transform: capitalize !important;
+  box-shadow: none !important;
+}
+
+/* Active Segment State - Epic Blue */
+.fc .fc-dayGridMonth-button.fc-button-active,
+.fc .fc-timeGridWeek-button.fc-button-active,
+.fc .fc-listMonth-button.fc-button-active,
+.fc .fc-listWeek-button.fc-button-active {
+  background-color: #0075e7 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* --------------------------------------------------
+   3. EVENT BADGES & CARDS
+   -------------------------------------------------- */
+.fc-daygrid-event-dot {
+  display: none !important;
+}
+
+.fc-daygrid-event {
+  background-color: #EBF5FF !important;
+  border: 1px solid #BFDBFE !important;
+  border-left: 4px solid #0075e7 !important;
+  border-radius: 0.375rem !important;
+  padding: 4px 6px !important;
+  margin-top: 4px !important;
+  cursor: pointer !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.fc-daygrid-event:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.fc-event-title {
+  font-weight: 600 !important;
+  color: #002855 !important;
+  white-space: normal !important;
+  font-size: 0.8125rem !important;
+}
+
+.fc-event-time {
+  font-weight: 600 !important;
+  color: #0075e7 !important;
+  font-size: 0.75rem !important;
+  margin-right: 4px !important;
+}
+
+/* Week View Event Styling */
+.fc-timegrid-event {
+  background-color: #EBF5FF !important;
+  border: 1px solid #BFDBFE !important;
+  border-left: 4px solid #0075e7 !important;
+  border-radius: 0.375rem !important;
+  padding: 4px 6px !important;
+  cursor: pointer !important;
+}
+
+.fc-timegrid-event .fc-event-main {
+  padding: 0 !important;
+  color: #002855 !important;
+}
+
+.fc-timegrid-event .fc-event-title {
+  font-size: 0.75rem !important;
+  line-height: 1.25 !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+
+/* --------------------------------------------------
+   4. SENTRILOCK LIST VIEW STYLING (MOBILE AGENDA)
+   -------------------------------------------------- */
+/* Style List View Headers (Day/Date banner) */
+.fc .fc-list-day-cushion {
+  background-color: #F3F4F6 !important;
+  color: #002855 !important;
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 600 !important;
+}
+
+/* Style List View Event Rows */
+.fc .fc-list-event {
+  cursor: pointer !important;
+  transition: background-color 0.15s ease;
+}
+
+.fc .fc-list-event:hover td {
+  background-color: #EBF5FF !important;
+}
+
+/* Remove default FullCalendar colored dot in List View */
+.fc .fc-list-event-graphic {
+  display: none !important;
+}
+
+/* Highlight Event Time in Epic Blue */
+.fc .fc-list-event-time {
+  color: #0075e7 !important;
+  font-weight: 600 !important;
+  width: 80px !important;
+}
+
+/* Style Event Title in Navy */
+.fc .fc-list-event-title {
+  color: #002855 !important;
+  font-weight: 600 !important;
+}
+
+/* --------------------------------------------------
+   5. MOBILE RESPONSIVE BREAKPOINTS (≤ 768px & ≤ 479px)
+   -------------------------------------------------- */
+@media screen and (max-width: 768px) {
+  /* Stack Title on top, center the navigation buttons below */
+  .fc .fc-toolbar.fc-header-toolbar {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    row-gap: 12px !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  /* Row 1: Title centered across 100% width */
+  .fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk:nth-child(2) {
+    order: -1 !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  /* Row 2: Center the Prev, Next, and Today buttons */
+  .fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk:nth-child(1) {
+    display: inline-flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  /* PHYSICALLY HIDE the right-side toggle switch on mobile screens */
+  .fc .fc-toolbar.fc-header-toolbar .fc-toolbar-chunk:nth-child(3) {
+    display: none !important;
+  }
+
+  /* Scale Title cleanly */
+  .fc .fc-toolbar-title {
+    font-size: 1.5rem !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Tighten button spacing slightly on mobile */
+  .fc .fc-button {
+    padding: 0.35rem 0.75rem !important;
+    font-size: 0.8125rem !important;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .fc .fc-toolbar-title {
+    font-size: 1.35rem !important;
+  }
+
+  .fc .fc-button {
+    padding: 0.3rem 0.6rem !important;
+    font-size: 0.75rem !important;
+  }
+}
