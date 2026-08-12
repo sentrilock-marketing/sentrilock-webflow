@@ -47,14 +47,15 @@
   width: 100% !important;
 }
 
-.logo3_list {
+.logo3_component {
   display: flex !important;
   flex-direction: row !important;
   flex-wrap: nowrap !important;
-  flex-shrink: 0 !important;
-  align-items: center !important;
-  justify-content: space-around !important;
-  animation: logo-marquee-scroll 35s linear infinite !important;
+  overflow: hidden !important;
+  width: 100% !important;
+  max-width: 80rem !important; /* Caps width at 1280px (Adjust this to match your container-large max-width) */
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
 .logo3_wrapper {
@@ -72,11 +73,11 @@
 }
 
 @media screen and (max-width: 767px) {
-  .logo3_wrapper { margin-right: 2.25rem !important; }
-  .logo3_logo { height: 1.75rem !important; width: auto !important; }
+  .logo3_wrapper { margin-right: 2.5rem !important; }
+  .logo3_logo { height: 2.5rem !important; width: auto !important; }
 }
 
 @media screen and (max-width: 479px) {
-  .logo3_wrapper { margin-right: 1.5rem !important; }
-  .logo3_logo { height: 1.5rem !important; width: auto !important; }
+  .logo3_wrapper { margin-right: 2rem !important; }
+  .logo3_logo { height: 2.25rem !important; width: auto !important; }
 }
