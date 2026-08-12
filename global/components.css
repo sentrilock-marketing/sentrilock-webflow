@@ -76,10 +76,10 @@
 
 @media screen and (max-width: 767px) {
   .logo3_wrapper { margin-right: 2.5rem !important; }
-  .logo3_logo { height: 2.5rem !important; width: auto !important; }
+  .logo3_logo { height: 3rem !important; width: auto !important; }
 }
 
 @media screen and (max-width: 479px) {
   .logo3_wrapper { margin-right: 2rem !important; }
-  .logo3_logo { height: 2.25rem !important; width: auto !important; }
+  .logo3_logo { height: 2.75rem !important; width: auto !important; }
 }
