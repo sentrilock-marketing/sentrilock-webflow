@@ -45,17 +45,19 @@
   flex-wrap: nowrap !important;
   overflow: hidden !important;
   width: 100% !important;
-}
-
-.logo3_component {
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: nowrap !important;
-  overflow: hidden !important;
-  width: 100% !important;
   max-width: 80rem !important; /* Caps width at 1280px (Adjust this to match your container-large max-width) */
   margin-left: auto !important;
   margin-right: auto !important;
+}
+
+.logo3_list {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  flex-shrink: 0 !important;
+  align-items: center !important;
+  justify-content: space-around !important;
+  animation: logo-marquee-scroll 35s linear infinite !important;
 }
 
 .logo3_wrapper {
