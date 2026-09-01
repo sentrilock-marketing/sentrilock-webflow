@@ -126,4 +126,25 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.stats2_number').forEach(el => {
     observer.observe(el);
   });
+
+  /* =========================================================
+     GLOBAL TRADEMARK SUPERSCRIPT LOGIC
+     ========================================================= */
+  const textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+  const nodesToReplace = [];
+  
+  while (textWalker.nextNode()) {
+    const node = textWalker.currentNode;
+    const parentTag = node.parentNode.tagName;
+    
+    if (node.nodeValue.includes('®') && parentTag !== 'SCRIPT' && parentTag !== 'STYLE' && parentTag !== 'SUP') {
+      nodesToReplace.push(node);
+    }
+  }
+
+  nodesToReplace.forEach(node => {
+    const span = document.createElement('span');
+    span.innerHTML = node.nodeValue.replace(/®/g, '<sup>®</sup>');
+    node.parentNode.replaceChild(span, node);
+  });
 });
