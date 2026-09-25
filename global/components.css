@@ -1,14 +1,6 @@
 /* =========================================================
    NAVBAR COMPONENT
    ========================================================= */
-.dropdown-chevron {
-  transition: transform 300ms ease-in-out !important;
-  transform-origin: center center !important;
-}
-
-.navbar1_dropdown-toggle.w--open .dropdown-chevron {
-  transform: rotate(180deg) !important;
-}
 
 @media screen and (min-width: 992px) {
   .navbar1_dropdown-list {
