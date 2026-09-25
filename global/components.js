@@ -147,4 +147,24 @@ document.addEventListener('DOMContentLoaded', () => {
     span.innerHTML = node.nodeValue.replace(/®/g, '<sup>®</sup>');
     node.parentNode.replaceChild(span, node);
   });
+
+  /* =========================================================
+     FORM CHARACTER COUNTER LOGIC
+     ========================================================= */
+  const textAreas = document.querySelectorAll('.is-text-area');
+
+  textAreas.forEach(function(textArea) {
+    const wrapper = textArea.closest('.form_field-wrapper');
+    
+    if (wrapper) {
+      const counterDisplay = wrapper.querySelector('.is-char-counter');
+      const maxLength = 500;
+
+      if (counterDisplay) {
+        textArea.addEventListener('input', function() {
+          counterDisplay.textContent = this.value.length + ' / ' + maxLength;
+        });
+      }
+    }
+  });
 });
