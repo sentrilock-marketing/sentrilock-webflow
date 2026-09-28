@@ -75,3 +75,22 @@
   .logo3_wrapper { margin-right: 2rem !important; }
   .logo3_logo { height: 2.75rem !important; width: auto !important; }
 }
+
+/* Smooth expanding containers */
+#b2b-wrapper,
+#agent-wrapper,
+.agent_info-card {
+  transition: opacity 0.35s ease-in-out, transform 0.35s ease-in-out;
+  animation: fadeInSlide 0.35s ease-in-out forwards;
+}
+
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
