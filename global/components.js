@@ -205,11 +205,27 @@ function hideAllCards() {
   Object.values(cards).forEach(card => hideElement(card));
 }
 
-// Toggle enabled/disabled & required states for form fields
+// Advanced Input Toggle: Removes 'name' attribute so Webflow ignores it
 function setInputState(input, enabled, required = false) {
   if (!input) return;
-  input.disabled = !enabled;
-  input.required = enabled ? required : false;
+  
+  // Store the original Webflow name the first time this runs
+  if (!input.dataset.originalName) {
+    input.dataset.originalName = input.getAttribute("name");
+  }
+
+  if (enabled) {
+    input.disabled = false;
+    input.required = required;
+    input.setAttribute("name", input.dataset.originalName);
+    input.setAttribute("data-name", input.dataset.originalName);
+  } else {
+    input.disabled = true;
+    input.required = false;
+    input.removeAttribute("name");
+    input.removeAttribute("data-name");
+    input.value = ""; // clear out any leftover value
+  }
 }
 
 function resetAllConditionalInputs() {
@@ -235,7 +251,6 @@ if (roleSelect) {
     hideElement(agentWrapper);
     resetAllConditionalInputs();
     hideAllCards();
-    if (agentIntent) agentIntent.value = "";
 
     if (selectedRole === "agent") {
       // Path C: Individual Agent
