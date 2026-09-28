@@ -168,57 +168,82 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  /* =========================================================
-     CONDITIONAL FORM ROUTING LOGIC
-     ========================================================= */
-  const roleSelect = document.getElementById("sales-role");
-  const b2bWrapper = document.getElementById("b2b-wrapper");
-  const agentWrapper = document.getElementById("agent-wrapper");
-  const agentIntent = document.getElementById("agent-intent");
+/* =========================================================
+   CONDITIONAL FORM ROUTING LOGIC
+   ========================================================= */
+const roleSelect = document.getElementById("sales-role");
+const b2bWrapper = document.getElementById("b2b-wrapper");
+const agentWrapper = document.getElementById("agent-wrapper");
+const agentIntent = document.getElementById("agent-intent");
 
-  const cards = {
-    "technical-issue": document.getElementById("technical-issue"),
-    "account-question": document.getElementById("account-question"),
-    "purchase-lockbox": document.getElementById("purchase-lockbox"),
-    "temp-access": document.getElementById("temp-access"),
-    "sentrilock-board": document.getElementById("sentrilock-board")
-  };
+// Sub-wrappers inside B2B
+const assocCountWrap = document.getElementById("assoc-count-wrap");
+const brokerCountWrap = document.getElementById("broker-count-wrap");
+const memberCountInput = document.getElementById("member-count");
+const agentCountInput = document.getElementById("agent-count");
 
-  function hideAllCards() {
-    Object.values(cards).forEach(card => {
-      if (card) card.style.display = "none";
-    });
-  }
+const cards = {
+  "technical-issue": document.getElementById("technical-issue"),
+  "account-question": document.getElementById("account-question"),
+  "purchase-lockbox": document.getElementById("purchase-lockbox"),
+  "temp-access": document.getElementById("temp-access"),
+  "sentrilock-board": document.getElementById("sentrilock-board")
+};
 
-  // Set initial hidden state on load
-  if (b2bWrapper) b2bWrapper.style.display = "none";
-  if (agentWrapper) agentWrapper.style.display = "none";
-  hideAllCards();
+function hideAllCards() {
+  Object.values(cards).forEach(card => {
+    if (card) card.style.display = "none";
+  });
+}
 
-  // Listen for main Role selection
-  if (roleSelect) {
-    roleSelect.addEventListener("change", function () {
-      const selectedRole = this.value;
+function resetB2BCounts() {
+  if (assocCountWrap) assocCountWrap.style.display = "none";
+  if (brokerCountWrap) brokerCountWrap.style.display = "none";
+  if (memberCountInput) memberCountInput.required = false;
+  if (agentCountInput) agentCountInput.required = false;
+}
 
-      if (b2bWrapper) b2bWrapper.style.display = "none";
-      if (agentWrapper) agentWrapper.style.display = "none";
-      hideAllCards();
-      if (agentIntent) agentIntent.value = "";
+// Initial hidden state
+if (b2bWrapper) b2bWrapper.style.display = "none";
+if (agentWrapper) agentWrapper.style.display = "none";
+resetB2BCounts();
+hideAllCards();
 
-      if (selectedRole.toLowerCase().includes("agent")) {
-        if (agentWrapper) agentWrapper.style.display = "block";
-      } else if (selectedRole !== "") {
-        if (b2bWrapper) b2bWrapper.style.display = "block";
+// Role Selection Event
+if (roleSelect) {
+  roleSelect.addEventListener("change", function () {
+    const selectedRole = this.value.toLowerCase();
+
+    if (b2bWrapper) b2bWrapper.style.display = "none";
+    if (agentWrapper) agentWrapper.style.display = "none";
+    resetB2BCounts();
+    hideAllCards();
+    if (agentIntent) agentIntent.value = "";
+
+    if (selectedRole.includes("agent")) {
+      // Path C: Individual Agent
+      if (agentWrapper) agentWrapper.style.display = "block";
+    } else if (selectedRole !== "") {
+      // Path A, B, or D: B2B Roles
+      if (b2bWrapper) b2bWrapper.style.display = "block";
+
+      if (selectedRole.includes("association") || selectedRole.includes("leadership")) {
+        if (assocCountWrap) assocCountWrap.style.display = "block";
+        if (memberCountInput) memberCountInput.required = true;
+      } else if (selectedRole.includes("broker") || selectedRole.includes("owner")) {
+        if (brokerCountWrap) brokerCountWrap.style.display = "block";
+        if (agentCountInput) agentCountInput.required = true;
       }
-    });
-  }
+      // "Other" role falls through here with no count field displayed or required
+    }
+  });
+}
 
-// Listen for Agent Intent selection
+// Agent Intent Event
 if (agentIntent) {
   agentIntent.addEventListener("change", function () {
     hideAllCards();
-    
-    // Normalize value to match IDs (e.g., "Technical Issue..." -> "technical-issue")
+
     let val = this.value.toLowerCase().trim();
     if (val.includes("technical")) val = "technical-issue";
     else if (val.includes("account") || val.includes("billing")) val = "account-question";
