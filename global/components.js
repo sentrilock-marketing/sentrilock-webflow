@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 /* =========================================================
-   CONDITIONAL FORM ROUTING LOGIC
+   CONDITIONAL FORM ROUTING LOGIC (CAPTURE-PHASE PURGE)
    ========================================================= */
 const roleSelect = document.getElementById("sales-role");
 const b2bWrapper = document.getElementById("b2b-wrapper");
@@ -174,7 +174,7 @@ function resetConditionalDisplay() {
   if (agentCountInput) agentCountInput.required = false;
 }
 
-// Set initial hidden state
+// Initial hidden state on load
 resetConditionalDisplay();
 
 // Role Selection Listener
@@ -218,23 +218,33 @@ if (agentIntent) {
   });
 }
 
-// SUBMIT PURGE: Delete inactive input elements right before Webflow packages submission
+// CAPTURE-PHASE SUBMIT PURGE
+// Intercepts form submission BEFORE Webflow's jQuery listener serializes the inputs
 const salesForm = roleSelect ? roleSelect.closest("form") : null;
 if (salesForm) {
   salesForm.addEventListener("submit", function () {
     const selectedRole = roleSelect ? roleSelect.value.toLowerCase().trim() : "";
+    const elementsToRemove = [];
 
+    // Collect specific inactive select elements based on active role
     if (selectedRole === "leadership") {
-      if (brokerCountWrap) brokerCountWrap.remove();
-      if (agentWrapper) agentWrapper.remove();
+      if (agentCountInput) elementsToRemove.push(agentCountInput);
+      if (agentIntent) elementsToRemove.push(agentIntent);
     } else if (selectedRole === "broker") {
-      if (assocCountWrap) assocCountWrap.remove();
-      if (agentWrapper) agentWrapper.remove();
+      if (memberCountInput) elementsToRemove.push(memberCountInput);
+      if (agentIntent) elementsToRemove.push(agentIntent);
     } else if (selectedRole === "other") {
-      if (assocCountWrap) assocCountWrap.remove();
-      if (brokerCountWrap) brokerCountWrap.remove();
-      if (agentWrapper) agentWrapper.remove();
+      if (memberCountInput) elementsToRemove.push(memberCountInput);
+      if (agentCountInput) elementsToRemove.push(agentCountInput);
+      if (agentIntent) elementsToRemove.push(agentIntent);
     }
-  });
+
+    // Purge inactive inputs from DOM before Webflow serializes the payload
+    elementsToRemove.forEach(el => {
+      if (el && el.parentNode) {
+        el.parentNode.removeChild(el);
+      }
+    });
+  }, true); // 'true' forces execution in CAPTURE phase
 }
 });
