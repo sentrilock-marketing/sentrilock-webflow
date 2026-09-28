@@ -127,49 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
     observer.observe(el);
   });
 
-  /* =========================================================
-     GLOBAL TRADEMARK SUPERSCRIPT LOGIC
-     ========================================================= */
-  const textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-  const nodesToReplace = [];
-  
-  while (textWalker.nextNode()) {
-    const node = textWalker.currentNode;
-    const parentTag = node.parentNode.tagName;
-    
-    if (node.nodeValue.includes('®') && parentTag !== 'SCRIPT' && parentTag !== 'STYLE' && parentTag !== 'SUP') {
-      nodesToReplace.push(node);
-    }
-  }
-
-  nodesToReplace.forEach(node => {
-    const span = document.createElement('span');
-    span.innerHTML = node.nodeValue.replace(/®/g, '<sup>®</sup>');
-    node.parentNode.replaceChild(span, node);
-  });
-
-  /* =========================================================
-     FORM CHARACTER COUNTER LOGIC
-     ========================================================= */
-  const textAreas = document.querySelectorAll('.is-text-area');
-
-  textAreas.forEach(function(textArea) {
-    const wrapper = textArea.closest('.form_field-wrapper');
-    
-    if (wrapper) {
-      const counterDisplay = wrapper.querySelector('.is-char-counter');
-      const maxLength = 500;
-
-      if (counterDisplay) {
-        textArea.addEventListener('input', function() {
-          counterDisplay.textContent = this.value.length + ' / ' + maxLength;
-        });
-      }
-    }
-  });
-
 /* =========================================================
-   CONDITIONAL FORM ROUTING LOGIC
+   CONDITIONAL FORM ROUTING LOGIC (DOM DETACHMENT)
    ========================================================= */
 const roleSelect = document.getElementById("sales-role");
 const b2bWrapper = document.getElementById("b2b-wrapper");
@@ -190,6 +149,34 @@ const cards = {
   "sentrilock-board": document.getElementById("sentrilock-board")
 };
 
+// Create DOM Placeholders to preserve exact positions
+function createPlaceholder(el) {
+  if (!el || !el.parentNode) return null;
+  const placeholder = document.createComment("placeholder-" + (el.id || "elem"));
+  el.parentNode.insertBefore(placeholder, el);
+  return placeholder;
+}
+
+const assocPlaceholder = createPlaceholder(assocCountWrap);
+const brokerPlaceholder = createPlaceholder(brokerCountWrap);
+const b2bPlaceholder = createPlaceholder(b2bWrapper);
+const agentPlaceholder = createPlaceholder(agentWrapper);
+
+function detachEl(el) {
+  if (el && el.parentNode) {
+    el.parentNode.removeChild(el);
+  }
+}
+
+function attachEl(el, placeholder) {
+  if (el && placeholder && placeholder.parentNode) {
+    if (!el.parentNode) {
+      placeholder.parentNode.insertBefore(el, placeholder);
+    }
+    showSmooth(el);
+  }
+}
+
 function showSmooth(el) {
   if (!el) return;
   el.style.display = "block";
@@ -205,41 +192,11 @@ function hideAllCards() {
   Object.values(cards).forEach(card => hideElement(card));
 }
 
-// Advanced Input Toggle: Removes 'name' attribute so Webflow ignores it
-function setInputState(input, enabled, required = false) {
-  if (!input) return;
-  
-  // Store the original Webflow name the first time this runs
-  if (!input.dataset.originalName) {
-    input.dataset.originalName = input.getAttribute("name");
-  }
-
-  if (enabled) {
-    input.disabled = false;
-    input.required = required;
-    input.setAttribute("name", input.dataset.originalName);
-    input.setAttribute("data-name", input.dataset.originalName);
-  } else {
-    input.disabled = true;
-    input.required = false;
-    input.removeAttribute("name");
-    input.removeAttribute("data-name");
-    input.value = ""; // clear out any leftover value
-  }
-}
-
-function resetAllConditionalInputs() {
-  setInputState(memberCountInput, false);
-  setInputState(agentCountInput, false);
-  setInputState(agentIntent, false);
-  hideElement(assocCountWrap);
-  hideElement(brokerCountWrap);
-}
-
-// Initial hidden and disabled state on load
-hideElement(b2bWrapper);
-hideElement(agentWrapper);
-resetAllConditionalInputs();
+// Initial state on load: detach conditional sections from form DOM
+detachEl(b2bWrapper);
+detachEl(agentWrapper);
+detachEl(assocCountWrap);
+detachEl(brokerCountWrap);
 hideAllCards();
 
 // Role Selection Event
@@ -247,28 +204,33 @@ if (roleSelect) {
   roleSelect.addEventListener("change", function () {
     const selectedRole = this.value.toLowerCase().trim();
 
-    hideElement(b2bWrapper);
-    hideElement(agentWrapper);
-    resetAllConditionalInputs();
+    // Detach all conditional sections first so Webflow ignores them
+    detachEl(b2bWrapper);
+    detachEl(agentWrapper);
+    detachEl(assocCountWrap);
+    detachEl(brokerCountWrap);
     hideAllCards();
+
+    if (memberCountInput) memberCountInput.required = false;
+    if (agentCountInput) agentCountInput.required = false;
+    if (agentIntent) agentIntent.value = "";
 
     if (selectedRole === "agent") {
       // Path C: Individual Agent
-      showSmooth(agentWrapper);
-      setInputState(agentIntent, true, false);
+      attachEl(agentWrapper, agentPlaceholder);
     } else if (selectedRole === "leadership") {
       // Path A: Association Leadership
-      showSmooth(b2bWrapper);
-      showSmooth(assocCountWrap);
-      setInputState(memberCountInput, true, true);
+      attachEl(b2bWrapper, b2bPlaceholder);
+      attachEl(assocCountWrap, assocPlaceholder);
+      if (memberCountInput) memberCountInput.required = true;
     } else if (selectedRole === "broker") {
       // Path B: Broker / Owner
-      showSmooth(b2bWrapper);
-      showSmooth(brokerCountWrap);
-      setInputState(agentCountInput, true, true);
+      attachEl(b2bWrapper, b2bPlaceholder);
+      attachEl(brokerCountWrap, brokerPlaceholder);
+      if (agentCountInput) agentCountInput.required = true;
     } else if (selectedRole === "other") {
-      // Path D: Other / Vendor (B2B visible, count fields disabled)
-      showSmooth(b2bWrapper);
+      // Path D: Other / Vendor (B2B attached, count dropdowns detached)
+      attachEl(b2bWrapper, b2bPlaceholder);
     }
   });
 }
