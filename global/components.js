@@ -167,4 +167,60 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
+
+  /* =========================================================
+     CONDITIONAL FORM ROUTING LOGIC
+     ========================================================= */
+  const roleSelect = document.getElementById("sales-role");
+  const b2bWrapper = document.getElementById("b2b-wrapper");
+  const agentWrapper = document.getElementById("agent-wrapper");
+  const agentIntent = document.getElementById("agent-intent");
+
+  const cards = {
+    "technical-issue": document.getElementById("technical-issue"),
+    "account-question": document.getElementById("account-question"),
+    "purchase-lockbox": document.getElementById("purchase-lockbox"),
+    "temp-access": document.getElementById("temp-access"),
+    "sentrilock-board": document.getElementById("sentrilock-board")
+  };
+
+  function hideAllCards() {
+    Object.values(cards).forEach(card => {
+      if (card) card.style.display = "none";
+    });
+  }
+
+  // Set initial hidden state on load
+  if (b2bWrapper) b2bWrapper.style.display = "none";
+  if (agentWrapper) agentWrapper.style.display = "none";
+  hideAllCards();
+
+  // Listen for main Role selection
+  if (roleSelect) {
+    roleSelect.addEventListener("change", function () {
+      const selectedRole = this.value;
+
+      if (b2bWrapper) b2bWrapper.style.display = "none";
+      if (agentWrapper) agentWrapper.style.display = "none";
+      hideAllCards();
+      if (agentIntent) agentIntent.value = "";
+
+      if (selectedRole.toLowerCase().includes("agent")) {
+        if (agentWrapper) agentWrapper.style.display = "block";
+      } else if (selectedRole !== "") {
+        if (b2bWrapper) b2bWrapper.style.display = "block";
+      }
+    });
+  }
+
+  // Listen for Agent Intent selection
+  if (agentIntent) {
+    agentIntent.addEventListener("change", function () {
+      hideAllCards();
+      const selectedCard = cards[this.value];
+      if (selectedCard) {
+        selectedCard.style.display = "block";
+      }
+    });
+  }
 });
