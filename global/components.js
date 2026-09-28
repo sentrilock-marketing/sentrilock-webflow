@@ -229,21 +229,22 @@ if (roleSelect) {
     hideAllCards();
     if (agentIntent) agentIntent.value = "";
 
-    if (selectedRole.includes("agent")) {
+    if (selectedRole === "agent") {
       // Path C: Individual Agent
       showSmooth(agentWrapper);
-    } else if (selectedRole !== "") {
-      // Path A, B, or D: B2B Roles
+    } else if (selectedRole === "leadership") {
+      // Path A: Association Leadership
       showSmooth(b2bWrapper);
-
-      if (selectedRole.includes("association") || selectedRole.includes("leadership")) {
-        showSmooth(assocCountWrap);
-        if (memberCountInput) memberCountInput.required = true;
-      } else if (selectedRole.includes("broker") || selectedRole.includes("owner")) {
-        showSmooth(brokerCountWrap);
-        if (agentCountInput) agentCountInput.required = true;
-      }
-      // "Other" role falls through here with B2B wrapper visible, but no count fields displayed or required
+      showSmooth(assocCountWrap);
+      if (memberCountInput) memberCountInput.required = true;
+    } else if (selectedRole === "broker") {
+      // Path B: Broker / Owner
+      showSmooth(b2bWrapper);
+      showSmooth(brokerCountWrap);
+      if (agentCountInput) agentCountInput.required = true;
+    } else if (selectedRole === "other") {
+      // Path D: Other / Vendor
+      showSmooth(b2bWrapper);
     }
   });
 }
@@ -253,16 +254,27 @@ if (agentIntent) {
   agentIntent.addEventListener("change", function () {
     hideAllCards();
 
-    let val = this.value.toLowerCase().trim();
-    if (val.includes("technical")) val = "technical-issue";
-    else if (val.includes("account") || val.includes("billing")) val = "account-question";
-    else if (val.includes("purchase") || val.includes("buy")) val = "purchase-lockbox";
-    else if (val.includes("temp") || val.includes("showing")) val = "temp-access";
-    else if (val.includes("board") || val.includes("bring")) val = "sentrilock-board";
+    const selectedValue = this.value;
+    if (!selectedValue) return;
 
-    const selectedCard = cards[val] || document.getElementById(val);
-    if (selectedCard) {
-      showSmooth(selectedCard);
+    let val = selectedValue.toLowerCase().trim();
+
+    if (val.includes("technical") || val === "technical-issue") {
+      val = "technical-issue";
+    } else if (val.includes("account") || val.includes("billing") || val === "account-question") {
+      val = "account-question";
+    } else if (val.includes("purchase") || val.includes("buy") || val === "purchase-lockbox") {
+      val = "purchase-lockbox";
+    } else if (val.includes("temp") || val.includes("showing") || val === "temp-access") {
+      val = "temp-access";
+    } else if (val.includes("board") || val.includes("bring") || val === "sentrilock-board") {
+      val = "sentrilock-board";
+    }
+
+    const targetCard = cards[val] || document.getElementById(val) || document.getElementById(selectedValue);
+
+    if (targetCard) {
+      showSmooth(targetCard);
     }
   });
 }
