@@ -128,14 +128,14 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 /* =========================================================
-   CONDITIONAL FORM ROUTING LOGIC (DOM DETACHMENT)
+   CONDITIONAL FORM ROUTING LOGIC
    ========================================================= */
 const roleSelect = document.getElementById("sales-role");
 const b2bWrapper = document.getElementById("b2b-wrapper");
 const agentWrapper = document.getElementById("agent-wrapper");
 const agentIntent = document.getElementById("agent-intent");
 
-// Sub-wrappers & Inputs inside B2B
+// Sub-wrappers inside B2B
 const assocCountWrap = document.getElementById("assoc-count-wrap");
 const brokerCountWrap = document.getElementById("broker-count-wrap");
 const memberCountInput = document.getElementById("member-count");
@@ -149,118 +149,91 @@ const cards = {
   "sentrilock-board": document.getElementById("sentrilock-board")
 };
 
-// Create DOM Placeholders to preserve exact positions
-function createPlaceholder(el) {
-  if (!el || !el.parentNode) return null;
-  const placeholder = document.createComment("placeholder-" + (el.id || "elem"));
-  el.parentNode.insertBefore(placeholder, el);
-  return placeholder;
+function hideElement(el) {
+  if (el) el.style.display = "none";
 }
 
-const assocPlaceholder = createPlaceholder(assocCountWrap);
-const brokerPlaceholder = createPlaceholder(brokerCountWrap);
-const b2bPlaceholder = createPlaceholder(b2bWrapper);
-const agentPlaceholder = createPlaceholder(agentWrapper);
-
-function detachEl(el) {
-  if (el && el.parentNode) {
-    el.parentNode.removeChild(el);
-  }
-}
-
-function attachEl(el, placeholder) {
-  if (el && placeholder && placeholder.parentNode) {
-    if (!el.parentNode) {
-      placeholder.parentNode.insertBefore(el, placeholder);
-    }
-    showSmooth(el);
-  }
-}
-
-function showSmooth(el) {
+function showElement(el) {
   if (!el) return;
   el.style.display = "block";
   el.style.animation = "fadeInSlide 0.35s ease-out forwards";
-}
-
-function hideElement(el) {
-  if (!el) return;
-  el.style.display = "none";
 }
 
 function hideAllCards() {
   Object.values(cards).forEach(card => hideElement(card));
 }
 
-// Initial state on load: detach conditional sections from form DOM
-detachEl(b2bWrapper);
-detachEl(agentWrapper);
-detachEl(assocCountWrap);
-detachEl(brokerCountWrap);
-hideAllCards();
+function resetConditionalDisplay() {
+  hideElement(b2bWrapper);
+  hideElement(agentWrapper);
+  hideElement(assocCountWrap);
+  hideElement(brokerCountWrap);
+  hideAllCards();
 
-// Role Selection Event
+  if (memberCountInput) memberCountInput.required = false;
+  if (agentCountInput) agentCountInput.required = false;
+}
+
+// Set initial hidden state
+resetConditionalDisplay();
+
+// Role Selection Listener
 if (roleSelect) {
   roleSelect.addEventListener("change", function () {
     const selectedRole = this.value.toLowerCase().trim();
-
-    // Detach all conditional sections first so Webflow ignores them
-    detachEl(b2bWrapper);
-    detachEl(agentWrapper);
-    detachEl(assocCountWrap);
-    detachEl(brokerCountWrap);
-    hideAllCards();
-
-    if (memberCountInput) memberCountInput.required = false;
-    if (agentCountInput) agentCountInput.required = false;
-    if (agentIntent) agentIntent.value = "";
+    resetConditionalDisplay();
 
     if (selectedRole === "agent") {
-      // Path C: Individual Agent
-      attachEl(agentWrapper, agentPlaceholder);
+      showElement(agentWrapper);
     } else if (selectedRole === "leadership") {
-      // Path A: Association Leadership
-      attachEl(b2bWrapper, b2bPlaceholder);
-      attachEl(assocCountWrap, assocPlaceholder);
+      showElement(b2bWrapper);
+      showElement(assocCountWrap);
       if (memberCountInput) memberCountInput.required = true;
     } else if (selectedRole === "broker") {
-      // Path B: Broker / Owner
-      attachEl(b2bWrapper, b2bPlaceholder);
-      attachEl(brokerCountWrap, brokerPlaceholder);
+      showElement(b2bWrapper);
+      showElement(brokerCountWrap);
       if (agentCountInput) agentCountInput.required = true;
     } else if (selectedRole === "other") {
-      // Path D: Other / Vendor (B2B attached, count dropdowns detached)
-      attachEl(b2bWrapper, b2bPlaceholder);
+      showElement(b2bWrapper);
     }
   });
 }
 
-// Agent Intent Event
+// Agent Intent Listener
 if (agentIntent) {
   agentIntent.addEventListener("change", function () {
     hideAllCards();
-
     const selectedValue = this.value;
     if (!selectedValue) return;
 
     let val = selectedValue.toLowerCase().trim();
-
-    if (val.includes("technical") || val === "technical-issue") {
-      val = "technical-issue";
-    } else if (val.includes("account") || val.includes("billing") || val === "account-question") {
-      val = "account-question";
-    } else if (val.includes("purchase") || val.includes("buy") || val === "purchase-lockbox") {
-      val = "purchase-lockbox";
-    } else if (val.includes("temp") || val.includes("showing") || val === "temp-access") {
-      val = "temp-access";
-    } else if (val.includes("board") || val.includes("bring") || val === "sentrilock-board") {
-      val = "sentrilock-board";
-    }
+    if (val.includes("technical") || val === "technical-issue") val = "technical-issue";
+    else if (val.includes("account") || val.includes("billing") || val === "account-question") val = "account-question";
+    else if (val.includes("purchase") || val.includes("buy") || val === "purchase-lockbox") val = "purchase-lockbox";
+    else if (val.includes("temp") || val.includes("showing") || val === "temp-access") val = "temp-access";
+    else if (val.includes("board") || val.includes("bring") || val === "sentrilock-board") val = "sentrilock-board";
 
     const targetCard = cards[val] || document.getElementById(val) || document.getElementById(selectedValue);
+    if (targetCard) showElement(targetCard);
+  });
+}
 
-    if (targetCard) {
-      showSmooth(targetCard);
+// SUBMIT PURGE: Delete inactive input elements right before Webflow packages submission
+const salesForm = roleSelect ? roleSelect.closest("form") : null;
+if (salesForm) {
+  salesForm.addEventListener("submit", function () {
+    const selectedRole = roleSelect ? roleSelect.value.toLowerCase().trim() : "";
+
+    if (selectedRole === "leadership") {
+      if (brokerCountWrap) brokerCountWrap.remove();
+      if (agentWrapper) agentWrapper.remove();
+    } else if (selectedRole === "broker") {
+      if (assocCountWrap) assocCountWrap.remove();
+      if (agentWrapper) agentWrapper.remove();
+    } else if (selectedRole === "other") {
+      if (assocCountWrap) assocCountWrap.remove();
+      if (brokerCountWrap) brokerCountWrap.remove();
+      if (agentWrapper) agentWrapper.remove();
     }
   });
 }
