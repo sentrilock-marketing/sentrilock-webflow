@@ -213,14 +213,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Listen for Agent Intent selection
-  if (agentIntent) {
-    agentIntent.addEventListener("change", function () {
-      hideAllCards();
-      const selectedCard = cards[this.value];
-      if (selectedCard) {
-        selectedCard.style.display = "block";
-      }
-    });
-  }
+// Listen for Agent Intent selection
+if (agentIntent) {
+  agentIntent.addEventListener("change", function () {
+    hideAllCards();
+    
+    // Normalize value to match IDs (e.g., "Technical Issue..." -> "technical-issue")
+    let val = this.value.toLowerCase().trim();
+    if (val.includes("technical")) val = "technical-issue";
+    else if (val.includes("account") || val.includes("billing")) val = "account-question";
+    else if (val.includes("purchase") || val.includes("buy")) val = "purchase-lockbox";
+    else if (val.includes("temp") || val.includes("showing")) val = "temp-access";
+    else if (val.includes("board") || val.includes("bring")) val = "sentrilock-board";
+
+    const selectedCard = cards[val] || document.getElementById(val);
+    if (selectedCard) {
+      selectedCard.style.display = "block";
+    }
+  });
+}
 });
