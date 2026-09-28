@@ -176,7 +176,7 @@ const b2bWrapper = document.getElementById("b2b-wrapper");
 const agentWrapper = document.getElementById("agent-wrapper");
 const agentIntent = document.getElementById("agent-intent");
 
-// Sub-wrappers inside B2B
+// Sub-wrappers & Inputs inside B2B
 const assocCountWrap = document.getElementById("assoc-count-wrap");
 const brokerCountWrap = document.getElementById("broker-count-wrap");
 const memberCountInput = document.getElementById("member-count");
@@ -205,17 +205,25 @@ function hideAllCards() {
   Object.values(cards).forEach(card => hideElement(card));
 }
 
-function resetB2BCounts() {
-  hideElement(assocCountWrap);
-  hideElement(brokerCountWrap);
-  if (memberCountInput) memberCountInput.required = false;
-  if (agentCountInput) agentCountInput.required = false;
+// Toggle enabled/disabled & required states for form fields
+function setInputState(input, enabled, required = false) {
+  if (!input) return;
+  input.disabled = !enabled;
+  input.required = enabled ? required : false;
 }
 
-// Initial hidden state on load
+function resetAllConditionalInputs() {
+  setInputState(memberCountInput, false);
+  setInputState(agentCountInput, false);
+  setInputState(agentIntent, false);
+  hideElement(assocCountWrap);
+  hideElement(brokerCountWrap);
+}
+
+// Initial hidden and disabled state on load
 hideElement(b2bWrapper);
 hideElement(agentWrapper);
-resetB2BCounts();
+resetAllConditionalInputs();
 hideAllCards();
 
 // Role Selection Event
@@ -225,25 +233,26 @@ if (roleSelect) {
 
     hideElement(b2bWrapper);
     hideElement(agentWrapper);
-    resetB2BCounts();
+    resetAllConditionalInputs();
     hideAllCards();
     if (agentIntent) agentIntent.value = "";
 
     if (selectedRole === "agent") {
       // Path C: Individual Agent
       showSmooth(agentWrapper);
+      setInputState(agentIntent, true, false);
     } else if (selectedRole === "leadership") {
       // Path A: Association Leadership
       showSmooth(b2bWrapper);
       showSmooth(assocCountWrap);
-      if (memberCountInput) memberCountInput.required = true;
+      setInputState(memberCountInput, true, true);
     } else if (selectedRole === "broker") {
       // Path B: Broker / Owner
       showSmooth(b2bWrapper);
       showSmooth(brokerCountWrap);
-      if (agentCountInput) agentCountInput.required = true;
+      setInputState(agentCountInput, true, true);
     } else if (selectedRole === "other") {
-      // Path D: Other / Vendor
+      // Path D: Other / Vendor (B2B visible, count fields disabled)
       showSmooth(b2bWrapper);
     }
   });
