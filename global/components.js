@@ -128,129 +128,130 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* =========================================================
-     CONDITIONAL FORM ROUTING & VALIDATION
-     ========================================================= */
-  const roleSelect = document.getElementById("sales-role");
-  const b2bWrapper = document.getElementById("b2b-wrapper");
-  const orgSizeWrap = document.getElementById("org-size-wrap");
-  const orgSizeLabel = document.getElementById("org-size-label");
-  const orgSizeSelect = document.getElementById("org-size");
+   CONDITIONAL FORM ROUTING & VALIDATION
+   ========================================================= */
+const roleSelect = document.getElementById("sales-role");
+const b2bWrapper = document.getElementById("b2b-wrapper");
+const orgSizeWrap = document.getElementById("org-size-wrap");
+const orgSizeLabel = document.getElementById("org-size-label");
+const orgSizeSelect = document.getElementById("org-size");
 
-  // Character Count Elements
-  const messageField = document.getElementById("sales-message");
-  const charCounter = document.getElementById("char-count");
+// Character Count Elements
+const messageField = document.getElementById("sales-message");
+const charCounter = document.getElementById("char-count");
 
-  // Agent Elements
-  const agentWrapper = document.getElementById("agent-wrapper");
-  const agentIntent = document.getElementById("agent-intent");
-  const cards = {
-    "technical-issue": document.getElementById("technical-issue"),
-    "account-question": document.getElementById("account-question"),
-    "purchase-lockbox": document.getElementById("purchase-lockbox"),
-    "temp-access": document.getElementById("temp-access"),
-    "sentrilock-board": document.getElementById("sentrilock-board")
-  };
+// Agent Elements
+const agentWrapper = document.getElementById("agent-wrapper");
+const agentIntent = document.getElementById("agent-intent");
+const cards = {
+  "technical-issue": document.getElementById("technical-issue"),
+  "account-question": document.getElementById("account-question"),
+  "purchase-lockbox": document.getElementById("purchase-lockbox"),
+  "temp-access": document.getElementById("temp-access"),
+  "sentrilock-board": document.getElementById("sentrilock-board")
+};
 
-  // Dynamic B2B Dropdown Options
-  const leadershipOptions = [
-    { text: "Select one...", value: "" },
-    { text: "Under 1,000 members", value: "under-1k" },
-    { text: "1,000 – 5,000 members", value: "1k-5k" },
-    { text: "5,000 – 15,000 members", value: "5k-15k" },
-    { text: "15,000+ members", value: "15k-plus" }
-  ];
+// Dynamic B2B Dropdown Options (Values updated for clean email output)
+const leadershipOptions = [
+  { text: "Select one...", value: "" },
+  { text: "Under 1,000 members", value: "Under 1,000 members" },
+  { text: "1,000 – 5,000 members", value: "1,000 - 5,000 members" },
+  { text: "5,000 – 15,000 members", value: "5,000 - 15,000 members" },
+  { text: "15,000+ members", value: "15,000+ members" }
+];
 
-  const brokerOptions = [
-    { text: "Select one...", value: "" },
-    { text: "1 – 10 agents", value: "1-10" },
-    { text: "11 – 50 agents", value: "11-50" },
-    { text: "51 – 200 agents", value: "51-200" },
-    { text: "200+ agents", value: "200-plus" }
-  ];
+const brokerOptions = [
+  { text: "Select one...", value: "" },
+  { text: "1 – 10 agents", value: "1 - 10 agents" },
+  { text: "11 – 50 agents", value: "11 - 50 agents" },
+  { text: "51 – 200 agents", value: "51 - 200 agents" },
+  { text: "200+ agents", value: "200+ agents" }
+];
 
-  const otherOptions = [
-    { text: "Select one...", value: "" },
-    { text: "1 – 50 employees", value: "1-50" },
-    { text: "51 – 200 employees", value: "51-200" },
-    { text: "201 – 500 employees", value: "201-500" },
-    { text: "500+ employees", value: "500-plus" }
-  ];
+const otherOptions = [
+  { text: "Select one...", value: "" },
+  { text: "1 – 50 employees", value: "1 - 50 employees" },
+  { text: "51 – 200 employees", value: "51 - 200 employees" },
+  { text: "201 – 500 employees", value: "201 - 500 employees" },
+  { text: "500+ employees", value: "500+ employees" }
+];
 
-  function populateDropdown(optionsArray) {
-    if (!orgSizeSelect) return;
-    orgSizeSelect.innerHTML = ""; 
-    optionsArray.forEach(opt => {
-      const optionEl = document.createElement("option");
-      optionEl.value = opt.value;
-      optionEl.textContent = opt.text;
-      orgSizeSelect.appendChild(optionEl);
-    });
-  }
+function populateDropdown(optionsArray) {
+  if (!orgSizeSelect) return;
+  orgSizeSelect.innerHTML = ""; 
+  optionsArray.forEach(opt => {
+    const optionEl = document.createElement("option");
+    optionEl.value = opt.value;
+    optionEl.textContent = opt.text;
+    orgSizeSelect.appendChild(optionEl);
+  });
+}
 
-  function setDisplay(el, state) {
-    if (el) el.style.display = state;
-    if (state === "block" && el) el.style.animation = "fadeInSlide 0.35s ease-out forwards";
-  }
+function setDisplay(el, state) {
+  if (el) el.style.display = state;
+  if (state === "block" && el) el.style.animation = "fadeInSlide 0.35s ease-out forwards";
+}
 
-  // Initial State
-  setDisplay(b2bWrapper, "none");
-  setDisplay(agentWrapper, "none");
-  setDisplay(orgSizeWrap, "none");
-  Object.values(cards).forEach(card => setDisplay(card, "none"));
+// Initial State
+setDisplay(b2bWrapper, "none");
+setDisplay(agentWrapper, "none");
+setDisplay(orgSizeWrap, "none");
+Object.values(cards).forEach(card => setDisplay(card, "none"));
 
-  // Live Character Counter
-  if (messageField && charCounter) {
-    messageField.addEventListener("input", function () {
-      charCounter.innerText = `${this.value.length}/500`;
-    });
-  }
+// Live Character Counter
+if (messageField && charCounter) {
+  messageField.addEventListener("input", function () {
+    charCounter.innerText = `${this.value.length}/500`;
+  });
+}
 
-  // Role Selection Logic
-  if (roleSelect) {
-    roleSelect.addEventListener("change", function () {
-      const role = this.value.toLowerCase().trim();
-      
-      setDisplay(b2bWrapper, "none");
-      setDisplay(agentWrapper, "none");
-      setDisplay(orgSizeWrap, "none");
-      Object.values(cards).forEach(card => setDisplay(card, "none"));
-      if (orgSizeSelect) orgSizeSelect.required = false;
+// Role Selection Logic
+if (roleSelect) {
+  roleSelect.addEventListener("change", function () {
+    const role = this.value.toLowerCase().trim();
+    const reqAsterisk = `<span class="form_asterisk-red">*</span>`;
+    
+    setDisplay(b2bWrapper, "none");
+    setDisplay(agentWrapper, "none");
+    setDisplay(orgSizeWrap, "none");
+    Object.values(cards).forEach(card => setDisplay(card, "none"));
+    if (orgSizeSelect) orgSizeSelect.required = false;
 
-      if (role === "agent") {
-        setDisplay(agentWrapper, "block");
-        if (agentIntent) agentIntent.value = "";
-      } 
-      else if (role === "leadership") {
-        setDisplay(b2bWrapper, "block");
-        setDisplay(orgSizeWrap, "block");
-        if (orgSizeLabel) orgSizeLabel.innerText = "How many members do you have? *";
-        populateDropdown(leadershipOptions);
-        if (orgSizeSelect) orgSizeSelect.required = true;
-      } 
-      else if (role === "broker" || role === "brokerage") {
-        setDisplay(b2bWrapper, "block");
-        setDisplay(orgSizeWrap, "block");
-        if (orgSizeLabel) orgSizeLabel.innerText = "How many agents are in your brokerage? *";
-        populateDropdown(brokerOptions);
-        if (orgSizeSelect) orgSizeSelect.required = true;
-      } 
-      else if (role === "other") {
-        setDisplay(b2bWrapper, "block");
-        setDisplay(orgSizeWrap, "block");
-        if (orgSizeLabel) orgSizeLabel.innerText = "Company size *";
-        populateDropdown(otherOptions);
-        if (orgSizeSelect) orgSizeSelect.required = true;
-      }
-    });
-  }
+    if (role === "agent") {
+      setDisplay(agentWrapper, "block");
+      if (agentIntent) agentIntent.value = "";
+    } 
+    else if (role === "leadership") {
+      setDisplay(b2bWrapper, "block");
+      setDisplay(orgSizeWrap, "block");
+      if (orgSizeLabel) orgSizeLabel.innerHTML = `How many members do you have? ${reqAsterisk}`;
+      populateDropdown(leadershipOptions);
+      if (orgSizeSelect) orgSizeSelect.required = true;
+    } 
+    else if (role === "broker" || role === "brokerage") {
+      setDisplay(b2bWrapper, "block");
+      setDisplay(orgSizeWrap, "block");
+      if (orgSizeLabel) orgSizeLabel.innerHTML = `How many agents are in your brokerage? ${reqAsterisk}`;
+      populateDropdown(brokerOptions);
+      if (orgSizeSelect) orgSizeSelect.required = true;
+    } 
+    else if (role === "other") {
+      setDisplay(b2bWrapper, "block");
+      setDisplay(orgSizeWrap, "block");
+      if (orgSizeLabel) orgSizeLabel.innerHTML = `Company size ${reqAsterisk}`;
+      populateDropdown(otherOptions);
+      if (orgSizeSelect) orgSizeSelect.required = true;
+    }
+  });
+}
 
-  // Agent Intent Routing Logic
-  if (agentIntent) {
-    agentIntent.addEventListener("change", function () {
-      Object.values(cards).forEach(card => setDisplay(card, "none"));
-      const val = this.value.toLowerCase().trim();
-      const targetCard = cards[val] || document.getElementById(val);
-      if (targetCard) setDisplay(targetCard, "block");
-    });
-  }
+// Agent Intent Routing Logic
+if (agentIntent) {
+  agentIntent.addEventListener("change", function () {
+    Object.values(cards).forEach(card => setDisplay(card, "none"));
+    const val = this.value.toLowerCase().trim();
+    const targetCard = cards[val] || document.getElementById(val);
+    if (targetCard) setDisplay(targetCard, "block");
+  });
+}
 });
