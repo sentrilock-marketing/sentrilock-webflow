@@ -217,12 +217,13 @@ if (roleSelect) {
     Object.values(cards).forEach(card => setDisplay(card, "none"));
     if (orgSizeSelect) orgSizeSelect.required = false;
 
-    // We now use .includes() so you can make the Webflow values as descriptive as you want
-    if (role.includes("agent")) {
+    // Now checks for "individual" or "agent"
+    if (role.includes("agent") || role.includes("individual")) {
       setDisplay(agentWrapper, "block");
       if (agentIntent) agentIntent.value = "";
     } 
-    else if (role.includes("leadership")) {
+    // Now checks for "association", "mls", or "leadership"
+    else if (role.includes("leadership") || role.includes("association") || role.includes("mls")) {
       setDisplay(b2bWrapper, "block");
       setDisplay(orgSizeWrap, "block");
       if (orgSizeLabel) orgSizeLabel.innerHTML = `How many members do you have? ${reqAsterisk}`;
