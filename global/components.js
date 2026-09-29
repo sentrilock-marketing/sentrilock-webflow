@@ -208,7 +208,7 @@ if (messageField && charCounter) {
 // Role Selection Logic
 if (roleSelect) {
   roleSelect.addEventListener("change", function () {
-    const role = this.value.toLowerCase().trim();
+    const role = this.value.toLowerCase();
     const reqAsterisk = `<span class="form_asterisk-red">*</span>`;
     
     setDisplay(b2bWrapper, "none");
@@ -217,25 +217,26 @@ if (roleSelect) {
     Object.values(cards).forEach(card => setDisplay(card, "none"));
     if (orgSizeSelect) orgSizeSelect.required = false;
 
-    if (role === "agent") {
+    // We now use .includes() so you can make the Webflow values as descriptive as you want
+    if (role.includes("agent")) {
       setDisplay(agentWrapper, "block");
       if (agentIntent) agentIntent.value = "";
     } 
-    else if (role === "leadership") {
+    else if (role.includes("leadership")) {
       setDisplay(b2bWrapper, "block");
       setDisplay(orgSizeWrap, "block");
       if (orgSizeLabel) orgSizeLabel.innerHTML = `How many members do you have? ${reqAsterisk}`;
       populateDropdown(leadershipOptions);
       if (orgSizeSelect) orgSizeSelect.required = true;
     } 
-    else if (role === "broker" || role === "brokerage") {
+    else if (role.includes("broker")) {
       setDisplay(b2bWrapper, "block");
       setDisplay(orgSizeWrap, "block");
       if (orgSizeLabel) orgSizeLabel.innerHTML = `How many agents are in your brokerage? ${reqAsterisk}`;
       populateDropdown(brokerOptions);
       if (orgSizeSelect) orgSizeSelect.required = true;
     } 
-    else if (role === "other") {
+    else if (role.includes("other")) {
       setDisplay(b2bWrapper, "block");
       setDisplay(orgSizeWrap, "block");
       if (orgSizeLabel) orgSizeLabel.innerHTML = `Company size ${reqAsterisk}`;
